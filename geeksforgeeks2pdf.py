@@ -32,16 +32,19 @@ def save_as_pdf(s):
     except pdfcrowd.Error, why:
         print 'Failed: ', why
 
+def keyword_exist(link):
+    return link.find('http://www.geeksforgeeks.org')==0 and (link.find('bst')>0 or link.find('binary-search')>0) and link not in crawled
+
 def crawler(hyperlink):
     global to_crawl
     global crawled
     http = httplib2.Http()
     status, response = http.request(hyperlink)
-    for link in BeautifulSoup(response, "html.parser", parse_only=SoupStrainer('a')):
-        if link.has_attr('href'):
-            li=link['href']
-            if li.find('http://www.geeksforgeeks.org')==0 and (li.find('bst')>0 or li.find('binary-search')>0) and li not in crawled and li.find('forums')<0:
-                to_crawl.append(li)
+    for href in BeautifulSoup(response, "html.parser", parse_only=SoupStrainer('a')):
+        if href.has_attr('href'):
+            link=href['href']
+            if keyword_exist(link):
+                to_crawl.append(link)
 
 def filter_useless_links():
     for pages in crawled:
@@ -56,13 +59,12 @@ def main():
     
     print "Beginning Crawling process. This might take a while."
     url= 'http://www.geeksforgeeks.org/category/binary-search-tree/'
-    crawled.append(url)
-    crawler(url)
+    to_crawl.append(url)
 
     while len(to_crawl):
         print '.',
         link=to_crawl.pop()
-        if link.find('http://www.geeksforgeeks.org')==0 and (link.find('bst')>0 or link.find('binary-search')>0) and link not in crawled:
+        if keyword_exist(link):
             crawled.append(link)
             crawler(link)
 
