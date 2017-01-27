@@ -3,12 +3,15 @@ import pdfcrowd
 import urllib2
 import re
 import sys
+import dotenv
 from bs4 import BeautifulSoup, SoupStrainer
 from random import choice
 from string import ascii_uppercase
 
 to_crawl=[]
+to_convert=[]
 crawled=[]
+dotenv.load()
 
 def get_page(page):
     source=urllib2.urlopen(page)
@@ -21,7 +24,7 @@ def save_as_pdf(s):
             filename = m.group(1)
         else:
             filename = ''.join(choice(ascii_uppercase) for i in range(12))
-        client = pdfcrowd.Client("raghavjajodia", "e956749933e5c1c6bf15954aa970ed90")
+        client = pdfcrowd.Client(dotenv.get('USER_NAME'), dotenv.get('API_KEY'))
         output_file = open('BST_'+filename+'.pdf', 'wb')
         html=get_page(s)
         client.convertHtml(html, output_file)
@@ -40,6 +43,12 @@ def crawler(hyperlink):
             if li.find('http://www.geeksforgeeks.org')==0 and (li.find('bst')>0 or li.find('binary-search')>0) and li not in crawled and li.find('forums')<0:
                 to_crawl.append(li)
 
+def filter_useless_links():
+    for pages in crawled:
+        if any(x in pages for x in ['#', 'tag', 'category', 'forum']):
+            continue
+        to_convert.append(pages)
+
 def main():
     global to_crawl
     global crawled
@@ -57,16 +66,14 @@ def main():
             crawled.append(link)
             crawler(link)
 
-    print "\nCrawling Finished! Beginning conversion to PDF, Hang Tight!"
-    task = len(crawled)
-    for pages in crawled:
-        if any(x in pages for x in ['#', 'tag', 'category', 'forum']):
-            continue
-        elif pages.find('bst') >= 0 or pages.find('binary-search') >= 0:
-            #save_as_pdf(pages)
-            count = count + 1
-            sys.stdout.write("\r[%i/%i] PDF created!" % (count, task))
-            sys.stdout.flush()
+    print "\nCrawling Finished! Beginning conversion to PDF, Hang Tight!"    
+    filter_useless_links()
+    task = len(to_convert)
+    for pages in to_convert:
+        #save_as_pdf(pages)
+        count = count + 1
+        sys.stdout.write("\r[%i/%i] PDF created!" % (count, task))
+        sys.stdout.flush()
 
     print "\nTask Completed!"
     print "Total PDFs created = " + str(count)
