@@ -33,7 +33,9 @@ def save_as_pdf(s):
         print 'Failed: ', why
 
 def keyword_exist(link):
-    return link.find('http://www.geeksforgeeks.org')==0 and (link.find('bst')>0 or link.find('binary-search')>0) and link not in crawled
+    return any(x in link for x in ['bst', 'binary-search']) and \
+           link not in crawled and \
+           link.find('http://www.geeksforgeeks.org')==0
 
 def crawler(hyperlink):
     global to_crawl
@@ -72,7 +74,7 @@ def main():
     filter_useless_links()
     task = len(to_convert)
     for pages in to_convert:
-        #save_as_pdf(pages)
+        save_as_pdf(pages)
         count = count + 1
         sys.stdout.write("\r[%i/%i] PDF created!" % (count, task))
         sys.stdout.flush()

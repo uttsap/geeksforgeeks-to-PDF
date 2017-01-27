@@ -9,6 +9,3 @@ The python script crawls the URL provided and downloads the webpages as PDF basd
 - Modify the code based on URL and keyword required to target a category
 - Run the script using `python geeksforgeeks2pdf.py`
 - Wait till download finishes
-
-#### Todo
-1. Take URL and Keywords as input
