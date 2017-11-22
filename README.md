@@ -1,5 +1,7 @@
 ## geeksforgeeks.org to PDF
 
+[![Join the chat at https://gitter.im/geeksforgeeks-to-PDF/Lobby](https://badges.gitter.im/geeksforgeeks-to-PDF/Lobby.svg)](https://gitter.im/geeksforgeeks-to-PDF/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The python script crawls the URL provided and downloads the webpages as PDF basd on keywords provided in the script.
 
 #### To Use
