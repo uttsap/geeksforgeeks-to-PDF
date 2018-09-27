@@ -30,7 +30,7 @@ def save_as_pdf(s):
         client.convertHtml(html, output_file)
         output_file.close()
     except pdfcrowd.Error, why:
-        print 'Failed: ', why
+        (print 'Failed: ', why)
 
 def keyword_exist(link):
     return any(x in link for x in ['bst', 'binary-search']) and \
@@ -59,18 +59,18 @@ def main():
     global crawled
     count = 0
     
-    print "Beginning Crawling process. This might take a while."
+    (print "Beginning Crawling process. This might take a while.")
     url= 'http://www.geeksforgeeks.org/category/binary-search-tree/'
     to_crawl.append(url)
 
     while len(to_crawl):
-        print '.',
+        (print '.'),
         link=to_crawl.pop()
         if keyword_exist(link):
             crawled.append(link)
             crawler(link)
 
-    print "\nCrawling Finished! Beginning conversion to PDF, Hang Tight!"    
+    (print "\nCrawling Finished! Beginning conversion to PDF, Hang Tight!")   
     filter_useless_links()
     task = len(to_convert)
     for pages in to_convert:
@@ -79,7 +79,7 @@ def main():
         sys.stdout.write("\r[%i/%i] PDF created!" % (count, task))
         sys.stdout.flush()
 
-    print "\nTask Completed!"
-    print "Total PDFs created = " + str(count)
+    (print "\nTask Completed!")
+    (print "Total PDFs created = " + str(count))
 
 if __name__ == "__main__": main()
